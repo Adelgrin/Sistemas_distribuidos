@@ -7,4 +7,4 @@ services:
     volumes:
       - ./src:/app
     deploy:
-      replicas: 25
+      replicas: 50
