@@ -1,24 +1,22 @@
 services:
-  servidor:
+  publisher:
     build:
       context: .
       dockerfile: Dockerfile
     image: cc7261:pyzmq
     volumes:
-      - ./servidor.py:/app/main.py
+      - ./publisher.py:/app/main.py
     ports:
       - 5555:5555
     deploy:
       replicas: 1
 
-  cliente:
+  subscriber:
     build:
       context: .
       dockerfile: Dockerfile
     image: cc7261:pyzmq
     volumes:
-      - ./cliente.py:/app/main.py
-    depends_on:
-      - servidor
+      - ./subscriber.py:/app/main.py
     deploy:
       replicas: 10

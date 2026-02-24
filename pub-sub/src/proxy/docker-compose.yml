@@ -1,37 +1,37 @@
 services:
 
-  broker:
+  proxy:
     build:
       context: .
       dockerfile: Dockerfile
     image: cc7261:pyzmq
-    container_name: broker
+    container_name: proxy
     volumes:
-      - ./broker.py:/app/main.py
+      - ./proxy.py:/app/main.py
     ports:
       - 5555:5555
       - 5556:5556
 
-  servidor:
+  publisher:
     build:
       context: .
       dockerfile: Dockerfile
     image: cc7261:pyzmq
     volumes:
-      - ./servidor.py:/app/main.py
+      - ./publisher.py:/app/main.py
     depends_on:
-      - broker
+      - proxy
     deploy:
-      replicas: 3
+      replicas: 10
 
-  cliente:
+  subscriber:
     build:
       context: .
       dockerfile: Dockerfile
     image: cc7261:pyzmq
     volumes:
-      - ./cliente.py:/app/main.py
+      - ./subscriber.py:/app/main.py
     depends_on:
-      - servidor
+      - proxy
     deploy:
-      replicas: 5
+      replicas: 1
