@@ -8,15 +8,14 @@ socket.connect("tcp://broker:5556")
 
 def create(tarefa):
     tarefas.append(tarefa)
-    # socket.send_string("tarefa adicionada")
-    socket.send_string(listar())
+    return "tarefa adicionada\n" + listar()
 
 def remove(tarefa):
     try:
         tarefas.remove(tarefa)
-        socket.send_string("tarefa removida")
-    except ValueError as e:
-        socket.send_string(f"a tarefa {e} não existe")
+        return "tarefa removida\n" + listar()
+    except ValueError:
+        return f"a tarefa {tarefa} não existe"
 
 
 def listar():
@@ -24,18 +23,20 @@ def listar():
     for i in tarefas:
         payload += (i + "\n")
     print(payload)
-    # socket.send_string(payload)
     return payload
 
 while True:
-    message = socket.recv()
-    # print(f"Mensagem recebida: {message}", flush=True)
-    # socket.send_string("World")
-    toprocess = str(message)
-    toprocess.split()
-    if toprocess[0].lower() == 'adiciona':
-        create(toprocess[1])
-    elif toprocess[0].lower() == 'remove':
-        remove(toprocess[1])
+    message = socket.recv_string()
+    parts = message.split()
+    cmd = parts[0].lower() if parts else ""
+    arg = parts[1] if len(parts) > 1 else None
+
+    if cmd == 'adiciona' and arg:
+        response = create(arg)
+    elif cmd == 'remove' and arg:
+        response = remove(arg)
     else:
-        listar()
+        response = listar()
+
+    socket.send_string(response)
+

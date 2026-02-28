@@ -18,22 +18,21 @@ while True:
 
     if socks.get(client_socket) == zmq.POLLIN:
         client_count += 1
-        message = client_socket.recv()
+        message = client_socket.recv_string()
         more = client_socket.getsockopt(zmq.RCVMORE)
         if more:
-            server_socket.send(message, zmq.SNDMORE)
+            server_socket.send_string(message, zmq.SNDMORE)
         else:
-            server_socket.send(message)
+            server_socket.send_string(message)
         print(f"Client messages: {client_count} {message}", flush=True)
 
     if socks.get(server_socket) == zmq.POLLIN:
         server_count += 1
-        message = server_socket.recv()
+        message = server_socket.recv_string()
         more = server_socket.getsockopt(zmq.RCVMORE)
         if more:
-            client_socket.send(message, zmq.SNDMORE)
+            client_socket.send_string(message, zmq.SNDMORE)
         else:
-            client_socket.send(message)
-        print(f"Server messages:  {message}", flush=True)
-
+            client_socket.send_string(message)
+        print(f"Server messages: {server_count} {message}", flush=True)
 
