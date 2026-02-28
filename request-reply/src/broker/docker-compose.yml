@@ -22,7 +22,7 @@ services:
     depends_on:
       - broker
     deploy:
-      replicas: 3
+      replicas: 2
 
   cliente:
     build:
@@ -34,4 +34,4 @@ services:
     depends_on:
       - servidor
     deploy:
-      replicas: 5
+      replicas: 3
