@@ -1,0 +1,87 @@
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_NODENAME: rabbitmq
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: passwd
+
+  producer:
+    image: cc7261:msgqueue
+    container_name: producer
+    volumes:
+      - ./producer.py:/app/main.py
+    depends_on:
+      - rabbitmq
+    deploy:
+      replicas: 1
+
+  consumer-info:
+    image: cc7261:msgqueue
+    container_name: consumer-info
+    environment:
+      SEVERITY: "info"
+      ORIGIN: "*"
+    volumes:
+      - ./consumer.py:/app/main.py
+    depends_on:
+      - rabbitmq
+    deploy:
+      replicas: 1
+
+  consumer-server1-warning:
+    image: cc7261:msgqueue
+    container_name: consumer-server1-warning
+    environment:
+      SEVERITY: "warning"
+      ORIGIN: "server1"
+    volumes:
+      - ./consumer.py:/app/main.py
+    depends_on:
+      - rabbitmq
+    deploy:
+      replicas: 1
+
+  consumer-server2-warning:
+    image: cc7261:msgqueue
+    container_name: consumer-server2-warning
+    environment:
+      SEVERITY: "warning"
+      ORIGIN: "server2"
+    volumes:
+      - ./consumer.py:/app/main.py
+    depends_on:
+      - rabbitmq
+    deploy:
+      replicas: 1
+
+  consumer-error:
+    image: cc7261:msgqueue
+    container_name: consumer-error
+    environment:
+      SEVERITY: "error"
+      ORIGIN: "*"
+    volumes:
+      - ./consumer.py:/app/main.py
+    depends_on:
+      - rabbitmq
+    deploy:
+      replicas: 1
+
+  consumer-tudo:
+    image: cc7261:msgqueue
+    container_name: consumer-tudo
+    environment:
+      SEVERITY: ""
+      ORIGIN: "#"
+    volumes:
+      - ./consumer.py:/app/main.py
+    depends_on:
+      - rabbitmq
+    deploy:
+      replicas: 1
