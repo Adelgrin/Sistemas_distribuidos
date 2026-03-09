@@ -34,4 +34,4 @@ services:
       - ventilator
       - sink
     deploy:
-      replicas: 10
+      replicas: 20
