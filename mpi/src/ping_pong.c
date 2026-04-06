@@ -26,7 +26,7 @@ int main(){
 
     MPI_Finalize();
     if(rank == 0){
-       printf("fim da execução");
+       printf("fim da execução\n");
     }
     return 0;
 }
